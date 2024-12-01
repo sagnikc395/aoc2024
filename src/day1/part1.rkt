@@ -1,11 +1,29 @@
+
 #lang racket
 
-;; reding files
-;;https://www.reddit.com/r/Racket/comments/8bosc3/how_to_read_file_line_by_line_fast/
-(define (next-line-it file)
-  (let ((line (read-line file 'any)))
-    (unless (eof-object? line)
-      (displayln line)
-      (next-line-it file))))
+(define (main)
+  ;; Read file contents
+  (define p (file->string "input.txt"))
+  ;; Split the input into lines and then split each line into numbers
+  (define lines (map (λ (line)
+                       (map string->number (string-split line)))
+                     (string-split p "\n")))
 
-(call-with-input-file "input.txt" next-line-it)
+  ;; Separate ll and rr from lines
+  (define ll (map first lines))
+  (define rr (map second lines))
+
+  ;; Sort ll and rr
+  (define sorted-ll (sort ll <))
+  (define sorted-rr (sort rr <))
+
+  ;; Calculate the sum of absolute differences
+  (define ans (for/sum ([l sorted-ll] [r sorted-rr])
+               (abs (- l r))))
+
+  ;; Print the result
+  (displayln ans))
+
+;; Run the main function
+(main)
+
